@@ -1,0 +1,13 @@
+{
+  "name": "veyo-pies-app",
+  "version": "1.0.0",
+  "description": "Veyo Pies online ordering app",
+  "main": "api/checkout.js",
+  "dependencies": {
+    "stripe": "^14.0.0",
+    "nodemailer": "^6.9.0"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
