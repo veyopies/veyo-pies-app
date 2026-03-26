@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Veyo Pies</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    [onclick] { cursor: pointer; }
+    body { font-family: Georgia, serif; background: #FDF8F3; color: #2D1810; min-height: 100vh; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; background: linear-gradient(135deg, #6B1D2A, #8B2335); box-shadow: 0 2px 12px rgba(107,29,42,0.3); padding: 0 16px; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; }
+    .nav-logo { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #FDF8F3; }
+    .nav-title { color: #FDF8F3; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+    .nav-sub { color: rgba(253,248,243,0.65); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+    .nav-links { display: flex; align-items: center; gap: 20px; }
+    .nav-link { color: rgba(253,248,243,0.8); font-size: 13px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; padding-bottom: 2px; border: none; border-bottom: 2px solid transparent; background: none; font-family: Georgia, serif; }
+    .nav-link.active { color: #FDF8F3; border-bottom-color: #FDF8F3; }
+    .cart-btn { position: relative; cursor: pointer; color: #FDF8F3; background: none; border: none; padding: 4px; }
+    .cart-badge { position: absolute; top: -6px; right: -8px; background: #D4A574; color: #2D1810; font-size: 10px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* PAGES */
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, #6B1D2A, #8B2335, #A5324A); padding: 64px 24px; text-align: center; }
+    .hero-logo { width: 110px; height: 110px; border-radius: 16px; object-fit: cover; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .hero h1 { color: #FDF8F3; font-size: 38px; font-weight: 700; margin-bottom: 10px; }
+    .hero p { color: rgba(253,248,243,0.85); font-size: 16px; line-height: 1.6; margin-bottom: 6px; }
+    .hero-sub { color: rgba(253,248,243,0.6); font-size: 13px; margin-bottom: 32px; }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { padding: 14px 32px; background: #FDF8F3; color: #6B1D2A; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: Georgia, serif; }
+    .btn-outline { padding: 14px 32px; background: transparent; color: #FDF8F3; border: 2px solid rgba(253,248,243,0.5); border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: Georgia, serif; }
+
+    /* VOLCANO FEATURE */
+    .feature { max-width: 900px; margin: 40px auto; padding: 0 16px; }
+    .feature-card { background: linear-gradient(135deg, #FFF9F0, #FDF0E0); border-radius: 16px; border: 1px solid #E8DDD4; display: flex; flex-wrap: wrap; align-items: center; overflow: hidden; }
+    .feature-img-wrap { flex: 1 1 200px; padding: 32px; text-align: center; }
+    .feature-img { width: 160px; height: 160px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    .feature-body { flex: 2 1 260px; padding: 32px; }
+    .badge { display: inline-block; background: #6B1D2A; color: #FDF8F3; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .feature-body h2 { font-size: 26px; font-weight: 700; margin-bottom: 10px; }
+    .feature-body p { color: #5A4A3A; font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
+    .feature-price { font-size: 24px; font-weight: 700; color: #6B1D2A; margin-right: 16px; }
+    .btn-maroon { padding: 11px 24px; background: linear-gradient(135deg, #6B1D2A, #8B2335); color: #FDF8F3; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: Georgia, serif; }
+
+    /* INFO CARDS */
+    .info-cards { max-width: 900px; margin: 0 auto 48px; padding: 0 16px; display: flex; flex-wrap: wrap; gap: 16px; }
+    .info-card { flex: 1 1 220px; padding: 24px; background: #fff; border-radius: 12px; border: 1px solid #E8DDD4; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .info-icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(107,29,42,0.1); color: #6B1D2A; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .info-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .info-card p { color: #5A4A3A; font-size: 13px; line-height: 1.8; }
+
+    /* MENU */
+    .menu-wrap { max-width: 1200px; margin: 0 auto; padding: 40px 16px; }
+    .menu-wrap h1 { font-size: 32px; font-weight: 700; text-align: center; margin-bottom: 6px; }
+    .menu-sub { color: #8B7D6B; font-size: 15px; text-align: center; margin-bottom: 32px; }
+    .cat-pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 32px; }
+    .cat-pill { padding: 8px 20px; border-radius: 24px; border: 1px solid #D4A574; background: transparent; color: #6B1D2A; font-size: 13px; font-weight: 600; cursor: pointer; font-family: Georgia, serif; transition: all 0.2s; }
+    .cat-pill.active { background: linear-gradient(135deg, #6B1D2A, #8B2335); border-color: transparent; color: #FDF8F3; }
+    .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .item-card { background: #fff; border-radius: 12px; border: 1px solid #E8DDD4; box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; }
+    .item-card:active { transform: scale(0.98); }
+    .item-card.featured { background: linear-gradient(135deg, #FFF9F0, #FDF0E0); border: 2px solid #D4A574; }
+    .item-featured-bar { background: linear-gradient(135deg, #6B1D2A, #8B2335); color: #FDF8F3; text-align: center; padding: 5px 0; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    .item-body { padding: 20px; display: flex; flex-direction: column; flex: 1; }
+    .item-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .item-img { width: 72px; height: 72px; border-radius: 10px; object-fit: cover; }
+    .item-price { font-size: 20px; font-weight: 700; color: #6B1D2A; }
+    .item-name { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .item-desc { color: #5A4A3A; font-size: 13px; line-height: 1.6; flex: 1; margin-bottom: 16px; }
+    .add-btn { width: 100%; padding: 11px 0; background: linear-gradient(135deg, #6B1D2A, #8B2335); color: #FDF8F3; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: Georgia, serif; transition: background 0.3s; }
+    .add-btn.added { background: #2E7D32; }
+
+    /* CART OVERLAY */
+    .cart-overlay { display: none; position: fixed; inset: 0; z-index: 200; justify-content: flex-end; }
+    .cart-overlay.open { display: flex; }
+    .cart-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+    .cart-panel { position: relative; width: 380px; max-width: 92vw; background: #FDF8F3; box-shadow: -4px 0 24px rgba(0,0,0,0.15); display: flex; flex-direction: column; animation: slideIn 0.3s ease; }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    .cart-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid #E8DDD4; }
+    .cart-head h2 { font-size: 18px; font-weight: 700; }
+    .close-btn { background: none; border: none; cursor: pointer; color: #2D1810; font-size: 22px; line-height: 1; padding: 0; }
+    .cart-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+    .cart-empty { text-align: center; padding: 48px 0; color: #8B7D6B; }
+    .cart-empty-icon { font-size: 44px; margin-bottom: 12px; }
+    .cart-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid #E8DDD4; }
+    .cart-item-img { width: 46px; height: 46px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 600; font-size: 14px; }
+    .cart-item-price { color: #6B1D2A; font-weight: 600; font-size: 13px; margin-top: 2px; }
+    .qty-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .qty-btn { width: 26px; height: 26px; border-radius: 50%; border: 1px solid #D4A574; background: transparent; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: #2D1810; }
+    .qty-num { font-weight: 600; min-width: 18px; text-align: center; font-size: 14px; }
+    .cart-footer { padding: 16px 20px; border-top: 1px solid #E8DDD4; }
+    .cart-total { display: flex; justify-content: space-between; font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .cart-note { font-size: 11px; color: #8B7D6B; margin-bottom: 14px; }
+    .checkout-btn { width: 100%; padding: 15px 0; background: linear-gradient(135deg, #6B1D2A, #8B2335); color: #FDF8F3; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: Georgia, serif; }
+
+    /* CHECKOUT */
+    .checkout-wrap { max-width: 860px; margin: 0 auto; padding: 40px 16px; }
+    .checkout-wrap h1 { font-size: 30px; font-weight: 700; text-align: center; margin-bottom: 6px; }
+    .checkout-sub { color: #8B7D6B; font-size: 14px; text-align: center; margin-bottom: 36px; }
+    .checkout-grid { display: flex; flex-wrap: wrap; gap: 24px; }
+    .checkout-form { flex: 2 1 320px; }
+    .form-card { background: #fff; border-radius: 12px; padding: 24px; border: 1px solid #E8DDD4; margin-bottom: 20px; }
+    .form-card h3 { font-size: 16px; font-weight: 700; color: #6B1D2A; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 1px solid #D4C4B4; border-radius: 8px; font-size: 14px; font-family: Georgia, serif; background: #fff; outline: none; -webkit-appearance: none; }
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
+    textarea { min-height: 70px; resize: vertical; }
+    .place-btn { width: 100%; padding: 16px 0; background: linear-gradient(135deg, #6B1D2A, #8B2335); color: #FDF8F3; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: Georgia, serif; }
+    .pay-note { font-size: 11px; color: #8B7D6B; text-align: center; margin-top: 10px; }
+    .order-summary { flex: 1 1 240px; }
+    .summary-card { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #E8DDD4; position: sticky; top: 80px; }
+    .summary-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+    .summary-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #F0E8DF; font-size: 13px; }
+    .summary-item-name { font-weight: 600; }
+    .summary-item-qty { color: #8B7D6B; }
+    .summary-item-price { font-weight: 600; color: #6B1D2A; }
+    .summary-total { display: flex; justify-content: space-between; padding-top: 14px; margin-top: 6px; border-top: 2px solid #2D1810; font-size: 16px; font-weight: 700; }
+    .summary-total-price { color: #6B1D2A; }
+
+    /* CONFIRMATION */
+    .confirm-wrap { max-width: 560px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+    .confirm-check { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #2E7D32, #388E3C); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+    .confirm-wrap h1 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+    .confirm-wrap p { color: #5A4A3A; font-size: 15px; line-height: 1.7; margin-bottom: 10px; }
+    .confirm-box { background: rgba(107,29,42,0.05); border-radius: 12px; padding: 20px; margin: 28px 0; border: 1px solid #E8DDD4; }
+    .confirm-box p { font-size: 13px; color: #5A4A3A; margin: 0; }
+    .confirm-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-confirm-primary { padding: 13px 28px; background: linear-gradient(135deg, #6B1D2A, #8B2335); color: #FDF8F3; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Georgia, serif; }
+    .btn-confirm-outline { padding: 13px 28px; background: transparent; color: #6B1D2A; border: 2px solid #6B1D2A; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: Georgia, serif; }
+
+    /* ABOUT */
+    .about-wrap { max-width: 720px; margin: 0 auto; padding: 48px 16px; text-align: center; }
+    .about-wrap h1 { font-size: 32px; font-weight: 700; margin-bottom: 6px; }
+    .about-wrap .sub { color: #8B7D6B; font-size: 15px; margin-bottom: 32px; }
+    .about-card { background: #fff; border-radius: 16px; padding: 36px; border: 1px solid #E8DDD4; text-align: left; }
+    .about-card p { font-size: 15px; line-height: 1.8; color: #3D2A1E; margin-bottom: 20px; }
+    .about-card p:last-child { margin-bottom: 0; }
+    .about-note { background: rgba(107,29,42,0.05); border-radius: 10px; padding: 20px; border-left: 4px solid #6B1D2A; margin-top: 24px; }
+    .about-note p { font-style: italic; font-size: 14px; color: #5A4A3A; margin-bottom: 8px; }
+    .about-note .contact { font-size: 13px; color: #8B7D6B; margin: 0; font-style: normal; }
+
+    /* FOOTER */
+    footer { background: linear-gradient(135deg, #2D1810, #3D2218); color: rgba(253,248,243,0.8); padding: 40px 24px; margin-top: 48px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 36px; justify-content: space-between; }
+    .footer-col h4 { color: #FDF8F3; font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+    .footer-col .label { color: #D4A574; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+    .footer-col p { font-size: 13px; line-height: 1.9; }
+    .footer-bottom { max-width: 1200px; margin: 28px auto 0; padding-top: 20px; border-top: 1px solid rgba(253,248,243,0.12); text-align: center; font-size: 12px; color: rgba(253,248,243,0.4); }
+
+    /* RESPONSIVE */
+    @media (max-width: 480px) {
+      .nav-links .nav-link:not(.active) { display: none; }
+      .hero h1 { font-size: 28px; }
+      .hero-logo { width: 90px; height: 90px; }
+      .items-grid { grid-template-columns: 1fr; }
+      .form-row { flex-direction: column; gap: 0; }
+      .checkout-grid { flex-direction: column; }
+      .order-summary { order: -1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <button class="nav-brand" onclick="showPage('home')" style="background:none;border:none;padding:0;font-family:Georgia,serif;">
+      <img src="/images/logo.png" alt="Veyo Pies" class="nav-logo" />
+      <div>
+        <div class="nav-title">VEYO PIES</div>
+        <div class="nav-sub">Est. Veyo, Utah</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="showPage('home')" id="nav-home">Home</button>
+      <button class="nav-link" onclick="showPage('menu')" id="nav-menu">Menu</button>
+      <button class="nav-link" onclick="showPage('about')" id="nav-about">About</button>
+      <button class="cart-btn" onclick="toggleCart()" aria-label="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge" id="cart-badge" style="display:none">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cart-overlay">
+  <div class="cart-backdrop" onclick="toggleCart()"></div>
+  <div class="cart-panel">
+    <div class="cart-head">
+      <h2>Your Order</h2>
+      <button class="close-btn" onclick="toggleCart()">&#215;</button>
+    </div>
+    <div class="cart-body" id="cart-body">
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🥧</div>
+        <p>Your cart is empty</p>
+        <p style="font-size:12px;margin-top:6px;color:#8B7D6B">Add some delicious pies!</p>
+      </div>
+    </div>
+    <div class="cart-footer" id="cart-footer" style="display:none">
+      <div class="cart-total"><span>Total</span><span id="cart-total-price" style="color:#6B1D2A">$0.00</span></div>
+      <p class="cart-note">Prices reflect cash price. Electronic transactions subject to a 3% fee.</p>
+      <button class="checkout-btn" onclick="goCheckout()">Proceed to Checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <img src="/images/hero-logo.png" alt="Veyo Pies" class="hero-logo" />
+    <h1>Veyo Pies</h1>
+    <p>Southern Utah's Hidden Gem Since Day One</p>
+    <p class="hero-sub">Homemade pies baked fresh daily in the heart of Southern Utah</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showPage('menu')">Order Now &#8594;</button>
+      <button class="btn-outline" onclick="showPage('menu')">View Menu</button>
+    </div>
+  </div>
+
+  <div class="feature">
+    <div class="feature-card">
+      <div class="feature-img-wrap">
+        <img src="/images/veyo-volcano-feature.jpg" alt="Veyo Volcano" class="feature-img" />
+      </div>
+      <div class="feature-body">
+        <span class="badge">&#9733; Signature Item</span>
+        <h2>The Veyo Volcano</h2>
+        <p>Sweet cream cheese, butterscotch, and chocolate with a whipped cream topping. Our legendary signature pie that has put Veyo on the map.</p>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <span class="feature-price">$17.99</span>
+          <button class="btn-maroon" onclick="showPage('menu')">Order Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-cards">
+    <div class="info-card">
+      <div class="info-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <h3>Visit Us</h3>
+      <p>24 S. Main Street<br>Veyo, Utah</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <h3>Call Ahead</h3>
+      <p>(435) 574-2132</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3>Hours</h3>
+      <p>Mon – Sat: 10:00 AM – 6:00 PM<br>Sunday: 12:00 PM – 5:00 PM</p>
+
+    </div>
+  </div>
+</div>
+
+<!-- MENU PAGE -->
+<div class="page" id="page-menu">
+  <div class="menu-wrap">
+    <h1>Our Menu</h1>
+    <p class="menu-sub">Handcrafted with love in Veyo, Utah</p>
+    <div class="cat-pills" id="cat-pills"></div>
+    <div class="items-grid" id="items-grid"></div>
+  </div>
+</div>
+
+<!-- ABOUT PAGE -->
+<div class="page" id="page-about">
+  <div class="about-wrap">
+    <img src="/images/about-logo.png" alt="Veyo Pies" style="width:90px;height:90px;border-radius:14px;object-fit:cover;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1)" />
+    <h1>About Veyo Pies</h1>
+    <p class="sub">A Southern Utah Tradition</p>
+    <div class="about-card">
+      <p>The history of pies in Veyo, Utah goes back over 30 years, when Evelyn Daniels owned the "Veyo Merc" with her husband Larry. She started making pies as a way to bring more customers to their store — and what started as a labor of love has grown into one of Southern Utah's most beloved bakeries.</p>
+      <p>Every pie is made from scratch using time-honored recipes and the freshest ingredients. From our classic fruit pies to our legendary Veyo Volcano, each creation is baked with care and pride right here in Veyo.</p>
+      <p>Whether you're a longtime local or just passing through on your way to explore the beautiful landscapes of Southern Utah, we invite you to stop by and taste what makes Veyo Pies special.</p>
+      <div class="about-note">
+        <p>"We don't bake every item on our menu every day. Please call to check availability."</p>
+        <p class="contact">Call <strong style="color:#6B1D2A">(435) 574-2132</strong> or email <strong style="color:#6B1D2A">veyopies@gmail.com</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT PAGE -->
+<div class="page" id="page-checkout">
+  <div class="checkout-wrap">
+    <h1>Checkout</h1>
+    <p class="checkout-sub">📍 Pickup at 24 S. Main Street, Veyo, Utah</p>
+    <div class="checkout-grid">
+      <div class="checkout-form">
+        <form id="checkout-form" onsubmit="placeOrder(event)">
+          <div class="form-card">
+            <h3>Contact Information</h3>
+            <div class="form-group"><label>Full Name *</label><input type="text" name="name" required placeholder="John Smith" /></div>
+            <div class="form-group"><label>Email *</label><input type="email" name="email" required placeholder="john@email.com" /></div>
+            <div class="form-group"><label>Phone *</label><input type="tel" name="phone" required placeholder="(435) 555-1234" /></div>
+          </div>
+          <div class="form-card">
+            <h3>Pickup Details</h3>
+            <p style="font-size:12px;color:#8B7D6B;margin-bottom:14px;">⏰ Orders must be placed at least 24 hours in advance during business hours.</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Pickup Date *</label>
+                <input type="date" name="pickupDate" id="pickup-date" required />
+                <p id="date-error" style="color:#c0392b;font-size:12px;margin-top:4px;display:none;">Please select a date at least 24 hours from now.</p>
+              </div>
+              <div class="form-group">
+                <label>Pickup Time *</label>
+                <select name="pickupTime" id="pickup-time" required>
+                  <option value="">Select date first</option>
+                </select>
+                <p id="time-error" style="color:#c0392b;font-size:12px;margin-top:4px;display:none;">Please select a pickup time.</p>
+              </div>
+            </div>
+            <div class="form-group"><label>Special Instructions</label><textarea name="specialInstructions" placeholder="Any special requests or dietary notes..."></textarea></div>
+          </div>
+          <button type="submit" class="place-btn" id="place-btn">Place Order — $0.00</button>
+          <p class="pay-note">Prices reflect cash price. Electronic transactions subject to a 3% fee.</p>
+        </form>
+      </div>
+      <div class="order-summary">
+        <div class="summary-card">
+          <h3>Order Summary</h3>
+          <div id="summary-items"></div>
+          <div class="summary-total"><span>Total</span><span class="summary-total-price" id="summary-total">$0.00</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION PAGE -->
+<div class="page" id="page-confirmation">
+  <div class="confirm-wrap">
+    <div class="confirm-check">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h1>Order Placed!</h1>
+    <p>Thank you for your order! We're getting your pies ready.</p>
+    <p style="color:#8B7D6B;font-size:14px">You'll receive a confirmation email shortly. Please pick up your order at <strong>24 S. Main Street, Veyo, Utah</strong>.</p>
+    <div class="confirm-box">
+      <p>Questions? Call us at <strong style="color:#6B1D2A">(435) 574-2132</strong></p>
+    </div>
+    <div class="confirm-btns">
+      <button class="btn-confirm-primary" onclick="showPage('home')">Back to Home</button>
+      <button class="btn-confirm-outline" onclick="showPage('menu')">Order More</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>VEYO PIES</h4>
+      <p>Homemade pies baked fresh in the heart of Veyo, Utah. A Southern Utah tradition.</p>
+    </div>
+    <div class="footer-col">
+      <div class="label">Visit Us</div>
+      <p>24 S. Main Street, Veyo, Utah<br>(435) 574-2132<br>veyopies@gmail.com</p>
+    </div>
+    <div class="footer-col">
+      <div class="label">Hours</div>
+      <p>Mon – Sat: 10:00 AM – 6:00 PM<br>Sunday: 12:00 PM – 5:00 PM</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 Veyo Pies. All rights reserved.</div>
+</footer>
+
+<script>
+const MENU = [
+  { cat: "Fruit Pies", items: [
+    { id:1,  name:"Raspberry Rhubarb",   desc:"Perfect flavor — a classic pairing of tart rhubarb and sweet raspberries in a golden flaky crust.",      price:17.99, img:"/images/raspberry-rhubarb.jpg" },
+    { id:2,  name:"Apple",               desc:"Our number one fruit pie — classic homemade apple with cinnamon-spiced filling in a golden flaky crust.", price:17.99, img:"/images/apple.jpg" },
+    { id:3,  name:"Cherry",              desc:"Plump, juicy cherries baked in our signature buttery crust.",                                             price:17.99, img:"/images/cherry.jpg" },
+    { id:4,  name:"Cherry Raspberry",    desc:"Perfect balance and blend — sweet cherries meet tangy raspberries in a buttery golden crust.",            price:17.99, img:"/images/cherry-raspberry.jpg" },
+    { id:5,  name:"Rhubarb",             desc:"It's all in the spices — tangy rhubarb baked with just the right touch of sweetness.",                    price:17.99, img:"/images/rhubarb.jpg" },
+    { id:6,  name:"Strawberry Rhubarb",  desc:"A true crowd pleaser — fresh strawberries and tart rhubarb in a golden homemade crust.",                  price:17.99, img:"/images/strawberry-rhubarb.jpg" },
+    { id:7,  name:"Blackberry",          desc:"One of our most requested — wild blackberries bursting with flavor in a buttery golden crust.",            price:17.99, img:"/images/blackberry.jpg" },
+    { id:8,  name:"Blueberry",           desc:"Wild sweet blueberries captured in a beautiful golden lattice crust.",                                    price:17.99, img:"/images/blueberry.jpg" },
+    { id:9,  name:"Peach",               desc:"Just peachy! Fresh peach slices baked to perfection in a flaky homemade crust.",                          price:17.99, img:"/images/peach.jpg" },
+    { id:10, name:"Peach Blueberry",     desc:"A must try! Sun-ripened peaches meet juicy blueberries in this irresistible combination.",                price:17.99, img:"/images/peach-blueberry.jpg" },
+    { id:11, name:"Mountain Berry",      desc:"A combo of blueberry, raspberry, and blackberry — a wild mountain medley in a golden crust.",             price:17.99, img:"/images/mountain-berry.jpg" },
+    { id:12, name:"Caramel Apple",       desc:"Delicious apples drizzled in gooey caramel — our apple pie taken to the next level.",                     price:18.99, img:"/images/caramel-apple.jpg" },
+  ]},
+  { cat: "Cream Pies", items: [
+    { id:13, name:"Sour Cream Lemon",    desc:"Lemon pie filling with a sweetened sour cream top — bright, tangy, and absolutely delicious.",            price:16.99, img:"/images/sour-cream-lemon.jpg" },
+    { id:14, name:"Chocolate Cream",     desc:"Fluffy chocolate that all love — rich and creamy topped with fresh whipped cream.",                       price:16.99, img:"/images/chocolate-cream.jpg" },
+    { id:15, name:"Coconut Cream",       desc:"Flake coconut and rich cream with a hint of our special extracts — a customer favorite.",                 price:17.99, img:"/images/coconut-cream.jpg" },
+    { id:16, name:"Banana Cream",        desc:"Loaded with banana, rich and creamy — layered with fresh bananas and topped with whipped cream.",         price:17.99, img:"/images/banana-cream.jpg" },
+  ]},
+  { cat: "Specialty Pies", items: [
+    { id:17, name:"Veyo Volcano",        desc:"Sweet cream cheese, butterscotch, and chocolate with a whipped cream topping. Our legendary signature pie!", price:17.99, img:"/images/veyo-volcano.jpg", featured:true },
+    { id:18, name:"Pumpkin",             desc:"This pie is incredible — warmly spiced pumpkin custard in a perfectly golden homemade crust. Seasonal.",  price:12.99, img:"/images/pumpkin.jpg" },
+    { id:19, name:"Cheesecake",          desc:"Made the way you want with many toppings and fillings — creamy, rich, and unforgettable.",                 price:17.99, img:"/images/cheesecake.jpg" },
+    { id:20, name:"Key Lime",            desc:"It's all about those little limes — tart, creamy key lime filling topped with fresh whipped cream.",       price:17.99, img:"/images/key-lime.jpg" },
+    { id:21, name:"Pecan",               desc:"Southern style and wonderful — a classic pecan pie with a rich, gooey filling. Seasonal.",                price:17.99, img:"/images/pecan.jpg" },
+    { id:22, name:"Triple Chocolate",    desc:"Chocolate pie filling with brownie chunks in the bottom and chocolate whipped cream. A chocoholic's dream.", price:17.99, img:"/images/triple-chocolate.jpg" },
+    { id:23, name:"Double Lemon",        desc:"Tart lemon and lemon pie filling for a perfect, intensely citrusy mix.",                                   price:17.99, img:"/images/double-lemon.jpg" },
+  ]},
+  { cat: "Pot Pie", items: [
+    { id:24, name:"Chicken Pot Pie",     desc:"Hearty homemade chicken pot pie loaded with vegetables in a rich, creamy sauce. Includes small fountain drink.", price:8.99, img:"/images/chicken-pot-pie.jpg" },
+  ]},
+  { cat: "Pastries", items: [
+    { id:25, name:"Strawberry Cream Cheese Danish", desc:"A flaky, buttery danish filled with sweet strawberry and cream cheese.",       price:2.32, img:"/images/strawberry-cream-cheese-danish.jpg" },
+    { id:26, name:"Cinnamon Roll",        desc:"Soft, warm cinnamon roll baked fresh in our bakery.",                                    price:2.05, img:"/images/cinnamon-roll.jpg" },
+    { id:27, name:"Cherry Turnover",      desc:"Flaky pastry filled with sweet cherry filling — a perfect handheld treat.",              price:2.32, img:"/images/cherry-turnover.jpg" },
+    { id:28, name:"Apple Turnover",       desc:"Flaky pastry filled with warm cinnamon apple filling.",                                  price:2.32, img:"/images/apple-turnover.jpg" },
+    { id:29, name:"Peanut Butter Cookie", desc:"Freshly baked homemade peanut butter cookies.",                                         price:1.99, img:"/images/peanut-butter-cookie.jpg" },
+  ]},
+];
+
+let cart = [];
+let activeCat = MENU[0].cat;
+
+// ---- PAGE NAVIGATION ----
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const nl = document.getElementById('nav-' + name);
+  if (nl) nl.classList.add('active');
+  window.scrollTo(0, 0);
+  if (name === 'menu') renderMenu();
+  if (name === 'checkout') renderCheckout();
+}
+
+// ---- MENU RENDERING ----
+function renderMenu() {
+  const pillsEl = document.getElementById('cat-pills');
+  const gridEl = document.getElementById('items-grid');
+  pillsEl.innerHTML = MENU.map(c =>
+    `<button class="cat-pill ${c.cat === activeCat ? 'active' : ''}" onclick="selectCat('${c.cat}')">${c.cat}</button>`
+  ).join('');
+  const cat = MENU.find(c => c.cat === activeCat);
+  gridEl.innerHTML = cat.items.map(item => {
+    const inCart = cart.find(i => i.id === item.id);
+    return `
+      <div class="item-card ${item.featured ? 'featured' : ''}">
+        ${item.featured ? '<div class="item-featured-bar">&#9733; Signature Item</div>' : ''}
+        <div class="item-body">
+          <div class="item-top">
+            <img src="${item.img}" alt="${item.name}" class="item-img" />
+            <span class="item-price">$${item.price.toFixed(2)}</span>
+          </div>
+          <div class="item-name">${item.name}</div>
+          <div class="item-desc">${item.desc}</div>
+          <button class="add-btn" id="btn-${item.id}" onclick="addToCart(${item.id})">
+            + Add to Order${inCart ? ` (${inCart.quantity})` : ''}
+          </button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function selectCat(cat) {
+  activeCat = cat;
+  renderMenu();
+}
+
+// ---- CART ----
+function addToCart(id) {
+  const item = MENU.flatMap(c => c.items).find(i => i.id === id);
+  const existing = cart.find(i => i.id === id);
+  if (existing) existing.quantity++;
+  else cart.push({ ...item, quantity: 1 });
+  updateCartUI();
+  const btn = document.getElementById('btn-' + id);
+  if (btn) {
+    btn.textContent = '✓ Added!';
+    btn.classList.add('added');
+    setTimeout(() => { btn.textContent = `+ Add to Order (${cart.find(i=>i.id===id)?.quantity||1})`; btn.classList.remove('added'); }, 1200);
+  }
+}
+
+function updateQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.quantity = Math.max(0, item.quantity + delta);
+  if (item.quantity === 0) cart = cart.filter(i => i.id !== id);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const count = cart.reduce((s, i) => s + i.quantity, 0);
+  const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  const badge = document.getElementById('cart-badge');
+  badge.textContent = count;
+  badge.style.display = count > 0 ? 'flex' : 'none';
+  const body = document.getElementById('cart-body');
+  const footer = document.getElementById('cart-footer');
+  if (cart.length === 0) {
+    body.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🥧</div><p>Your cart is empty</p><p style="font-size:12px;margin-top:6px;color:#8B7D6B">Add some delicious pies!</p></div>`;
+    footer.style.display = 'none';
+  } else {
+    body.innerHTML = cart.map(i => `
+      <div class="cart-item">
+        <img src="${i.img}" alt="${i.name}" class="cart-item-img" />
+        <div class="cart-item-info">
+          <div class="cart-item-name">${i.name}</div>
+          <div class="cart-item-price">$${(i.price * i.quantity).toFixed(2)}</div>
+        </div>
+        <div class="qty-controls">
+          <button class="qty-btn" onclick="updateQty(${i.id},-1)">&#8722;</button>
+          <span class="qty-num">${i.quantity}</span>
+          <button class="qty-btn" onclick="updateQty(${i.id},1)">+</button>
+        </div>
+      </div>`).join('');
+    document.getElementById('cart-total-price').textContent = '$' + total.toFixed(2);
+    footer.style.display = 'block';
+  }
+}
+
+function toggleCart() {
+  const overlay = document.getElementById('cart-overlay');
+  overlay.classList.toggle('open');
+}
+
+function goCheckout() {
+  toggleCart();
+  showPage('checkout');
+}
+
+// ---- PICKUP DATE/TIME LOGIC ----
+
+// Business hours: Mon-Sat 10AM-6PM, Sun 12PM-5PM
+const HOURS = {
+  weekday: ['10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM'],
+  sunday:  ['12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM']
+};
+
+function initDatePicker() {
+  const dateInput = document.getElementById('pickup-date');
+
+  // Minimum date = tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split('T')[0];
+  dateInput.min = minDate;
+  dateInput.value = '';
+
+  dateInput.addEventListener('change', updateTimePicker);
+}
+
+function updateTimePicker() {
+  const dateInput = document.getElementById('pickup-date');
+  const timeSelect = document.getElementById('pickup-time');
+  const dateError = document.getElementById('date-error');
+  const val = dateInput.value;
+
+  if (!val) {
+    timeSelect.innerHTML = '<option value="">Select date first</option>';
+    return;
+  }
+
+  // Validate at least 24 hours from now
+  const chosen = new Date(val + 'T00:00:00');
+  const now = new Date();
+  const diffHours = (chosen - now) / (1000 * 60 * 60);
+  if (diffHours < 20) { // buffer for timezone
+    dateError.style.display = 'block';
+    timeSelect.innerHTML = '<option value="">Invalid date</option>';
+    return;
+  }
+  dateError.style.display = 'none';
+
+  // Sunday = day 0
+  const dayOfWeek = chosen.getDay();
+  const times = dayOfWeek === 0 ? HOURS.sunday : HOURS.weekday;
+
+  timeSelect.innerHTML = '<option value="">Select a time</option>' +
+    times.map(t => `<option value="${t}">${t}</option>`).join('');
+}
+
+// ---- CHECKOUT ----
+function renderCheckout() {
+  const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  document.getElementById('place-btn').textContent = `Place Order — $${total.toFixed(2)}`;
+  document.getElementById('summary-items').innerHTML = cart.map(i => `
+    <div class="summary-item">
+      <span><span class="summary-item-name">${i.name}</span> <span class="summary-item-qty">×${i.quantity}</span></span>
+      <span class="summary-item-price">$${(i.price * i.quantity).toFixed(2)}</span>
+    </div>`).join('');
+  document.getElementById('summary-total').textContent = '$' + total.toFixed(2);
+  initDatePicker();
+}
+
+async function placeOrder(e) {
+  e.preventDefault();
+
+  // Validate pickup date and time
+  const pickupDate = document.getElementById('pickup-date').value;
+  const pickupTime = document.getElementById('pickup-time').value;
+  if (!pickupDate) { document.getElementById('date-error').style.display = 'block'; return; }
+  if (!pickupTime || pickupTime === '') { document.getElementById('time-error').style.display = 'block'; return; }
+  document.getElementById('time-error').style.display = 'none';
+
+  const btn = document.getElementById('place-btn');
+  btn.textContent = 'Processing...';
+  btn.disabled = true;
+
+  const form = document.getElementById('checkout-form');
+  const inputs = form.querySelectorAll('input, select, textarea');
+  const fields = {};
+  inputs.forEach(el => { if (el.name) fields[el.name] = el.value; });
+
+  try {
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: cart,
+        customerName: fields.name,
+        customerEmail: fields.email,
+        customerPhone: fields.phone,
+        pickupDate: fields.pickupDate,
+        pickupTime: fields.pickupTime,
+        specialInstructions: fields.specialInstructions,
+      }),
+    });
+
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url; // Redirect to Stripe checkout
+    } else {
+      throw new Error(data.error || 'Something went wrong');
+    }
+  } catch (err) {
+    alert('There was a problem processing your order. Please try again or call us at (435) 574-2132.');
+    btn.textContent = `Place Order — $${cart.reduce((s,i) => s + i.price * i.quantity, 0).toFixed(2)}`;
+    btn.disabled = false;
+  }
+}
+
+// ---- INIT ----
+renderMenu();
+</script>
+</body>
+</html>
