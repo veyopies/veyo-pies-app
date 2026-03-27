@@ -13,7 +13,7 @@
     nav { position: sticky; top: 0; z-index: 100; background: linear-gradient(135deg, #6B1D2A, #8B2335); box-shadow: 0 2px 12px rgba(107,29,42,0.3); padding: 0 16px; }
     .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
     .nav-brand { display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; }
-    .nav-logo { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #FDF8F3; }
+    .nav-logo { width: 48px; height: 48px; border-radius: 0; object-fit: contain; background: transparent; }
     .nav-title { color: #FDF8F3; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
     .nav-sub { color: rgba(253,248,243,0.65); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
     .nav-links { display: flex; align-items: center; gap: 20px; }
@@ -28,11 +28,12 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
     /* HERO */
-    .hero { background: linear-gradient(135deg, #6B1D2A, #8B2335, #A5324A); padding: 64px 24px; text-align: center; }
-    .hero-logo { width: 110px; height: 110px; border-radius: 16px; object-fit: cover; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .hero { background: linear-gradient(160deg, #5A1522 0%, #6B1D2A 40%, #8B2335 100%); padding: 56px 24px 64px; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(212,165,116,0.12) 0%, transparent 70%); pointer-events: none; }
+    .hero-logo { width: 200px; height: 200px; border-radius: 0; object-fit: contain; margin-bottom: 16px; filter: drop-shadow(0 4px 20px rgba(212,165,116,0.35)); }
     .hero h1 { color: #FDF8F3; font-size: 38px; font-weight: 700; margin-bottom: 10px; }
-    .hero p { color: rgba(253,248,243,0.85); font-size: 16px; line-height: 1.6; margin-bottom: 6px; }
-    .hero-sub { color: rgba(253,248,243,0.6); font-size: 13px; margin-bottom: 32px; }
+    .hero p { color: rgba(253,248,243,0.9); font-size: 17px; line-height: 1.6; margin-bottom: 8px; letter-spacing: 0.3px; }
+    .hero-sub { color: rgba(253,248,243,0.65); font-size: 14px; margin-bottom: 36px; }
     .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
     .btn-primary { padding: 14px 32px; background: #FDF8F3; color: #6B1D2A; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: Georgia, serif; }
     .btn-outline { padding: 14px 32px; background: transparent; color: #FDF8F3; border: 2px solid rgba(253,248,243,0.5); border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: Georgia, serif; }
@@ -162,7 +163,7 @@
     @media (max-width: 480px) {
       .nav-links .nav-link:not(.active) { display: none; }
       .hero h1 { font-size: 28px; }
-      .hero-logo { width: 90px; height: 90px; }
+      .hero-logo { width: 160px; height: 160px; }
       .items-grid { grid-template-columns: 1fr; }
       .form-row { flex-direction: column; gap: 0; }
       .checkout-grid { flex-direction: column; }
@@ -176,7 +177,7 @@
 <nav>
   <div class="nav-inner">
     <button class="nav-brand" onclick="showPage('home')" style="background:none;border:none;padding:0;font-family:Georgia,serif;">
-      <img src="/images/logo.png" alt="Veyo Pies" class="nav-logo" />
+      <img src="/images/nav-logo.png" alt="Veyo Pies" class="nav-logo" />
       <div>
         <div class="nav-title">VEYO PIES</div>
         <div class="nav-sub">Est. Veyo, Utah</div>
@@ -221,7 +222,6 @@
 <div class="page active" id="page-home">
   <div class="hero">
     <img src="/images/hero-logo.png" alt="Veyo Pies" class="hero-logo" />
-    <h1>Veyo Pies</h1>
     <p>Southern Utah's Hidden Gem Since Day One</p>
     <p class="hero-sub">Homemade pies baked fresh daily in the heart of Southern Utah</p>
     <div class="hero-btns">
@@ -286,7 +286,7 @@
 <!-- ABOUT PAGE -->
 <div class="page" id="page-about">
   <div class="about-wrap">
-    <img src="/images/about-logo.png" alt="Veyo Pies" style="width:90px;height:90px;border-radius:14px;object-fit:cover;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1)" />
+    <img src="/images/logo.png" alt="Veyo Pies" style="width:160px;height:160px;border-radius:0;object-fit:contain;margin-bottom:16px;filter:drop-shadow(0 4px 12px rgba(107,29,42,0.2))" />
     <h1>About Veyo Pies</h1>
     <p class="sub">A Southern Utah Tradition</p>
     <div class="about-card">
